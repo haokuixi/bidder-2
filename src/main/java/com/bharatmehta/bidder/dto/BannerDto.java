@@ -13,7 +13,6 @@ public class BannerDto {
 	
 	private boolean active;
 	
-	private String url;
 
 	
 	public String getId() {
@@ -49,13 +48,6 @@ public class BannerDto {
 		this.active = active;
 	}
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
 
 	public SizeDto getSize() {
 		return size;
@@ -78,8 +70,6 @@ public class BannerDto {
 		builder.append(bidPrice);
 		builder.append(", active=");
 		builder.append(active);
-		builder.append(", url=");
-		builder.append(url);
 		builder.append("]");
 		return builder.toString();
 	}

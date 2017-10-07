@@ -22,9 +22,14 @@ import com.bharatmehta.bidder.domain.Banner;
 import com.bharatmehta.bidder.dto.AuthResponse;
 import com.bharatmehta.bidder.dto.BannerDto;
 import com.bharatmehta.bidder.dto.BannersDto;
-import com.bharatmehta.bidder.repository.BannerFetchrTest;
 import com.bharatmehta.bidder.repository.BannerRepository;
 
+/**
+ * 
+ * Class to fetch the Banners from external API 
+ * @author bharatmehta
+ *
+ */
 @Component
 public class BannerFetchr {
 
@@ -42,6 +47,9 @@ public class BannerFetchr {
 	@Value("${BANNERURL}")
 	private String bannerURL;
 	
+	@Value("${BANNERSURL}")
+	private String bannersURL;
+	
 	
 	private String authenticationToken;
 	
@@ -49,9 +57,9 @@ public class BannerFetchr {
 	
 	
 
-	public String authenticationToken() {
+	private String authenticationToken() {
 		if(authenticationToken == null){
-			fetch();
+			authenticateToApi();
 		}
 		return authenticationToken;
 	}
@@ -59,11 +67,13 @@ public class BannerFetchr {
 	
 	@PostConstruct
 	public void fetch() {
-			ResponseEntity<AuthResponse> response = restTemplate().exchange(authURL, HttpMethod.POST, entity(), AuthResponse.class);
-		    authenticationToken = response.getBody().getToken();
+		LOGGER.info("Fetching Banners from {}" , bannersURL);
+		
+		ResponseEntity<AuthResponse> response = authenticateToApi();
+		authenticationToken = response.getBody().getToken();
+		
 		    if(authenticationToken != null){
-		    	ResponseEntity<BannersDto> banners = restTemplate().exchange("http://localhost:8888/banners",HttpMethod.GET,
-		    			entity(authheaders()), BannersDto.class);
+		    	ResponseEntity<BannersDto> banners = getBannersFromApi();
 		    	if(banners != null){
 		    		BannersDto bannersDto = banners.getBody();
 		    		if(bannersDto != null){
@@ -71,7 +81,7 @@ public class BannerFetchr {
 		    			
 		    			if(bannerDto != null){
 		    				for(BannerDto i : bannerDto){
-		    					System.out.println(i);
+		    					LOGGER.info("Inserting to database : {} ", i);
 		    					Banner banner = new Banner(i.getId(),i.getSize().getHeight(),
 		    							i.getSize().getWidth(),
 		    							i.getBudget(),i.getBidPrice(), i.isActive(), bannerURL + i.getId());
@@ -84,6 +94,28 @@ public class BannerFetchr {
 		    }
 		    
 		    
+		
+	}
+
+
+	private ResponseEntity<AuthResponse> authenticateToApi() {
+		try{
+			return restTemplate().exchange(authURL, HttpMethod.POST, entity(), AuthResponse.class);
+		}catch(RestClientException e){
+			LOGGER.error("Error occured while authenticating to  banners at {} ", authURL);
+			throw e;
+		}
+		
+	}
+
+
+	private ResponseEntity<BannersDto> getBannersFromApi() {
+		try{
+			return restTemplate().exchange(bannersURL,HttpMethod.GET,entity(authheaders()), BannersDto.class);
+		}catch(RestClientException e){
+			LOGGER.error("Error occured while fetching banners from {} ", bannersURL);
+			throw e;
+		}
 		
 	}
 	
