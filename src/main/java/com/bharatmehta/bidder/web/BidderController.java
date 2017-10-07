@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bharatmehta.bidder.domain.Bid;
 import com.bharatmehta.bidder.dto.BidRequestDto;
 import com.bharatmehta.bidder.dto.BidResponseDto;
+import com.bharatmehta.bidder.exception.BidderServiceException;
 import com.bharatmehta.bidder.service.BidderService;
 
 @RestController
@@ -27,7 +28,7 @@ public class BidderController {
 	
 	@GetMapping(produces = {MediaType.APPLICATION_JSON_UTF8_VALUE})
 	@ResponseStatus(HttpStatus.OK)
-	public @ResponseBody BidResponseDto bid(@Valid BidRequestDto bidRequest){
+	public @ResponseBody BidResponseDto bid(@Valid BidRequestDto bidRequest) throws BidderServiceException{
 	
 		Bid bid = bidderService.bid(bidRequest.getTid(), bidRequest.getHeight(), bidRequest.getWidth());
 		BidResponseDto response = new BidResponseDto();

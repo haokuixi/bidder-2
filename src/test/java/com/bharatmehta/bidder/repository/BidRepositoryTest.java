@@ -15,7 +15,7 @@ public class BidRepositoryTest {
 
 	@Test
 	public void test() {
-		double value = repository.findSumByBanner("1");
+		Double value = repository.findSumByBanner("1");
 		System.out.println(value);
 	}
 

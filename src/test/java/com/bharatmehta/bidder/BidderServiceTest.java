@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.bharatmehta.bidder.exception.BidderServiceException;
 import com.bharatmehta.bidder.service.BidderService;
 
 @RunWith(SpringRunner.class)
@@ -18,8 +19,8 @@ public class BidderServiceTest {
 	private BidderService bidderService;
 
 	@Test
-	public void testOne() {
-		assertNotNull(bidderService.findActiveBanner( 1.0, 1.0));
+	public void testOne() throws BidderServiceException {
+		assertNotNull(bidderService.bid("jslkjskljs",  1.0, 1.0));
 	}
 
 }
