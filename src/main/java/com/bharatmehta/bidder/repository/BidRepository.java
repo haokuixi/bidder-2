@@ -13,7 +13,7 @@ import com.bharatmehta.bidder.domain.Bid;
 public interface BidRepository extends JpaRepository<Bid, Long> {
 	
 	
-	@Cacheable(value = "banners")
+	
 	@Query(nativeQuery = true , value ="select sum(price) from bid where banner_id = ?")
 	public BigDecimal findSumByBanner(String bannerId);
 

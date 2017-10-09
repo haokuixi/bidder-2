@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 
 /**
@@ -18,6 +19,7 @@ import org.springframework.scheduling.annotation.Scheduled;
  */
 @Configuration
 @EnableCaching
+@EnableScheduling
 public class CacheConfiguration {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(CacheConfiguration.class);
@@ -29,9 +31,9 @@ public class CacheConfiguration {
 
 	
 	@CacheEvict(allEntries = true, value = {"banners"})
-	@Scheduled(fixedDelay = 5 * 1000 ,  initialDelay = 200)
+	@Scheduled(fixedRate = 5000)
 	public void reportCacheEvict() {
 		
-		LOGGER.info("Evicting cache at {}", new Date());
+		LOGGER.info("Evicting cache: {} at {}", cacheManager().getCacheNames(),new Date());
 	}
 }

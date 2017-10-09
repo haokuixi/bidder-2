@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
@@ -95,6 +96,7 @@ public class BannerFetchr implements Fetchr {
 	 */
     @Override
 	@Transactional(readOnly = false)
+    @Scheduled(fixedRate = 5000)
 	public int fetch(){
 		return fetchAndSaveBanners();
 	}
