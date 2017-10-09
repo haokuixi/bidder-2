@@ -1,4 +1,4 @@
-package com.bharatmehta.bidder.dto;
+package com.bharatmehta.bidder.webservice.dto;
 
 public class AuthResponse {
 

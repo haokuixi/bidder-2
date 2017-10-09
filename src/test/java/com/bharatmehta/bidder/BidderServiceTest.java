@@ -20,7 +20,7 @@ public class BidderServiceTest {
 
 	@Test
 	public void testOne() throws BidderServiceException {
-		assertNotNull(bidderService.bid("jslkjskljs",  1.0, 1.0));
+		assertNotNull(bidderService.bid("jslkjskljs",  1, 1));
 	}
 
 }

@@ -65,12 +65,12 @@ public class BidRequestDto {
 		this.adsize = adsize;
 	}
 	
-	public double getHeight(){
+	public int getHeight(){
 		
-		double height = -1.0;
+		int height = -1;
 		try{
 			String [] adSizeArray = adsize.split("x");
-			height = Double.parseDouble(adSizeArray[0]);
+			height = Integer.parseInt(adSizeArray[0]);
 		}catch(Exception e){
 			//TODO
 		}
@@ -80,12 +80,12 @@ public class BidRequestDto {
 	
 	
 	
-	public double getWidth(){
+	public int getWidth(){
 		
-		double width = -1.0;
+		int width = -1;
 		try{
 			String [] adSizeArray = adsize.split("x");
-			 width = Double.parseDouble(adSizeArray[1]);
+			 width = Integer.parseInt(adSizeArray[1]);
 		}catch(Exception e){
 		//TODO	
 		}

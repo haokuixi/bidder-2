@@ -1,5 +1,8 @@
 package com.bharatmehta.bidder.repository;
 
+import java.math.BigDecimal;
+
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -10,7 +13,8 @@ import com.bharatmehta.bidder.domain.Bid;
 public interface BidRepository extends JpaRepository<Bid, Long> {
 	
 	
+	@Cacheable(value = "banners")
 	@Query(nativeQuery = true , value ="select sum(price) from bid where banner_id = ?")
-	public Double findSumByBanner(String bannerId);
+	public BigDecimal findSumByBanner(String bannerId);
 
 }

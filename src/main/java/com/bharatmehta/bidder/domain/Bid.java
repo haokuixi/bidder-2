@@ -3,6 +3,7 @@
  */
 package com.bharatmehta.bidder.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -29,7 +30,7 @@ public class Bid {
 	
 	private String bannerId;
 	
-	private double price;
+	private BigDecimal price;
 	
 	private String tid;
 	
@@ -67,13 +68,13 @@ public class Bid {
 
 
 
-	public double getPrice() {
-		return price;
+	public BigDecimal getPrice() {
+		return price  == null ? BigDecimal.ZERO : price;
 	}
 
 
 
-	public void setPrice(double price) {
+	public void setPrice(BigDecimal price) {
 		this.price = price;
 	}
 

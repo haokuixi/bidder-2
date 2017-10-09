@@ -27,7 +27,7 @@ public class BannerFetchrTest {
 	@Test
 	public void testFetch() {
 		
-		fetchr.fetch();
+		fetchr.init();
 		assertNotNull(bannerRepository.findAll());
 		
 		

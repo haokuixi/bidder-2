@@ -1,5 +1,7 @@
 package com.bharatmehta.bidder.repository;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,7 @@ public class BidRepositoryTest {
 
 	@Test
 	public void test() {
-		Double value = repository.findSumByBanner("1");
+		BigDecimal value = repository.findSumByBanner("1");
 		System.out.println(value);
 	}
 

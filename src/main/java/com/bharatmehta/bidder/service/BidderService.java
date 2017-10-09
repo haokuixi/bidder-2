@@ -7,5 +7,5 @@ public interface BidderService {
 
 	
 	
-	public Bid bid(String tid, double height, double width) throws BidderServiceException;
+	public Bid bid(String tid, int height, int width) throws BidderServiceException;
 }

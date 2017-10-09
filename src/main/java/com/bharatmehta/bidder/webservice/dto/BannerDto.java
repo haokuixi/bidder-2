@@ -1,15 +1,15 @@
-package com.bharatmehta.bidder.dto;
+package com.bharatmehta.bidder.webservice.dto;
 
 
 public class BannerDto {
 	
 	private String id;
 	
-	private SizeDto size;
+	private Size size;
 	
-	private double budget;
+	private String budget;
 	
-	private double bidPrice;
+	private String bidPrice;
 	
 	private boolean active;
 	
@@ -24,19 +24,19 @@ public class BannerDto {
 	}
 
 
-	public double getBudget() {
+	public String getBudget() {
 		return budget;
 	}
 
-	public void setBudget(double budget) {
+	public void setBudget(String budget) {
 		this.budget = budget;
 	}
 
-	public double getBidPrice() {
+	public String getBidPrice() {
 		return bidPrice;
 	}
 
-	public void setBidPrice(double bidPrice) {
+	public void setBidPrice(String bidPrice) {
 		this.bidPrice = bidPrice;
 	}
 
@@ -49,11 +49,11 @@ public class BannerDto {
 	}
 
 
-	public SizeDto getSize() {
+	public Size getSize() {
 		return size;
 	}
 
-	public void setSize(SizeDto size) {
+	public void setSize(Size size) {
 		this.size = size;
 	}
 

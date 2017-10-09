@@ -1,5 +1,6 @@
 package com.bharatmehta.bidder.service;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -11,18 +12,21 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import com.bharatmehta.bidder.domain.Banner;
-import com.bharatmehta.bidder.dto.AuthResponse;
-import com.bharatmehta.bidder.dto.BannerDto;
-import com.bharatmehta.bidder.dto.BannersDto;
+import com.bharatmehta.bidder.exception.WebServiceAuthenticationException;
 import com.bharatmehta.bidder.repository.BannerRepository;
+import com.bharatmehta.bidder.webservice.dto.AuthResponse;
+import com.bharatmehta.bidder.webservice.dto.BannerDto;
+import com.bharatmehta.bidder.webservice.dto.Banners;
 
 /**
  * 
@@ -31,93 +35,114 @@ import com.bharatmehta.bidder.repository.BannerRepository;
  *
  */
 @Component
-public class BannerFetchr {
+public class BannerFetchr implements Fetchr {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(BannerFetchr.class);
 	
 	@Autowired
 	private BannerRepository bannerRepository;
 	
-	@Value("${AUTH}")
+	@Value("${application.webservice.authentication.request}")
 	private  String authenticationRequest;
 	
-	@Value("${AUTHURL}")
+	@Value("${application.webservice.authentication}")
 	private String authURL;
 	
-	@Value("${BANNERURL}")
+	@Value("${application.webservice.show-banner}")
 	private String bannerURL;
 	
-	@Value("${BANNERSURL}")
+	@Value("${application.webservice.banners}")
 	private String bannersURL;
 	
 	
 	private String authenticationToken;
 	
 
+	/* (non-Javadoc)
+	 * @see com.bharatmehta.bidder.service.Fetchr#authenticate()
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public boolean authenticate() {
+		boolean isAuthenticated = false;
+		try{
+			ResponseEntity<AuthResponse> response = restTemplate().exchange(authURL, HttpMethod.POST, entity(), AuthResponse.class);
+			if(response.getStatusCode() == HttpStatus.OK ){
+				LOGGER.info("Authentication successfull at {}",authURL);
+			    AuthResponse tokenResponse = response.getBody();
+			    if(tokenResponse != null){
+			    	authenticationToken = tokenResponse.getToken(); 
+			    	isAuthenticated = true;
+			    }
+				
+			}else{
+				
+				LOGGER.error("Getting {} response from {} ",response.getStatusCode(), authURL);
+				throw new WebServiceAuthenticationException("Response Code :" + response.getStatusCode());
+			}
+		}catch(RestClientException e){
+			LOGGER.error("Problem occurred while authenticating",e);
+			throw new WebServiceAuthenticationException(e);
+		}
+		return isAuthenticated;
+	
+	}
 	
 	
 
-	private String authenticationToken() {
-		if(authenticationToken == null){
-			authenticateToApi();
-		}
-		return authenticationToken;
+    /* (non-Javadoc)
+	 * @see com.bharatmehta.bidder.service.Fetchr#fetch()
+	 */
+    @Override
+	@Transactional(readOnly = false)
+	public int fetch(){
+		return fetchAndSaveBanners();
 	}
 	
+  
+    private  int fetchAndSaveBanners() {
+	 int count = 0;
+	 try{
+		 
+		 ResponseEntity<Banners> response =  restTemplate().exchange(bannersURL,HttpMethod.GET,entity(headers(true)), Banners.class);
+		 if(response.getStatusCode() == HttpStatus.OK){
+			
+			  Banners bannersInResponse = response.getBody();
+			  if(bannersInResponse != null){
+				  List<BannerDto> banners = bannersInResponse.getBanners();
+				  if(banners != null){
+					  for(BannerDto i : banners){
+						  Banner banner = new Banner(i.getId(),i.getSize().getHeight(), i.getSize().getWidth(),	i.getBudget(),i.getBidPrice(), i.isActive(),
+								  bannerURL + i.getId());
+						  bannerRepository.saveAndFlush(banner);
+						  count += 1;
+					  }
+				  }
+			  }
+			  
+		  }else{
+			  throw new BannersNotFoundException(MessageFormat.format("{0} responded with {1}", new Object[]{bannersURL, response.getStatusCode()}));
+		  }
+	 }catch(RestClientException e){
+		 LOGGER.error("Problem occurred while fetching banners from {}",bannersURL);
+		 throw new BannerInAccibleException(e);
+	 }catch(Exception e){
+		 LOGGER.error("Problem occurred while fetching banners from {}",bannersURL);
+		 throw new BannerInAccibleException(e);
+	 }
+	  
+	  return count;
+   }
 	
 	@PostConstruct
-	public void fetch() {
-		LOGGER.info("Fetching Banners from {}" , bannersURL);
-		
-		ResponseEntity<AuthResponse> response = authenticateToApi();
-		authenticationToken = response.getBody().getToken();
-		
-		    if(authenticationToken != null){
-		    	ResponseEntity<BannersDto> banners = getBannersFromApi();
-		    	if(banners != null){
-		    		BannersDto bannersDto = banners.getBody();
-		    		if(bannersDto != null){
-		    			List<BannerDto> bannerDto = bannersDto.getBanners();
-		    			
-		    			if(bannerDto != null){
-		    				for(BannerDto i : bannerDto){
-		    					LOGGER.info("Inserting to database : {} ", i);
-		    					Banner banner = new Banner(i.getId(),i.getSize().getHeight(),
-		    							i.getSize().getWidth(),
-		    							i.getBudget(),i.getBidPrice(), i.isActive(), bannerURL + i.getId());
-		    					bannerRepository.saveAndFlush(banner);
-		    				}
-		    			}
-		    		}
-		    	}
-		    	
-		    }
-		    
-		    
-		
-	}
-
-
-	private ResponseEntity<AuthResponse> authenticateToApi() {
-		try{
-			return restTemplate().exchange(authURL, HttpMethod.POST, entity(), AuthResponse.class);
-		}catch(RestClientException e){
-			LOGGER.error("Error occured while authenticating to  banners at {} ", authURL);
-			throw e;
+	public void init() {
+		if(authenticate()){
+			fetchAndSaveBanners();
 		}
 		
 	}
 
 
-	private ResponseEntity<BannersDto> getBannersFromApi() {
-		try{
-			return restTemplate().exchange(bannersURL,HttpMethod.GET,entity(authheaders()), BannersDto.class);
-		}catch(RestClientException e){
-			LOGGER.error("Error occured while fetching banners from {} ", bannersURL);
-			throw e;
-		}
-		
-	}
 	
 	
 	private RestTemplate restTemplate() {
@@ -127,7 +152,7 @@ public class BannerFetchr {
 	}
 	
 	private HttpEntity<String> entity(){
-		HttpEntity<String> entity = new HttpEntity<String>(authenticationRequest, headers());
+		HttpEntity<String> entity = new HttpEntity<String>(authenticationRequest, headers( false));
 		return entity;
 		
 	}
@@ -138,18 +163,15 @@ public class BannerFetchr {
 		
 	}
 	
-	private HttpHeaders headers(){
+	private HttpHeaders headers(boolean authenticate){
 		 HttpHeaders headers = new HttpHeaders();
+		 if(authenticate){
+			 headers.add("Authorization", authenticationToken);
+		 }
 		  headers.setContentType(MediaType.APPLICATION_JSON);
 		  return headers;
 	}
 	
-	private HttpHeaders authheaders(){
-		 HttpHeaders headers = new HttpHeaders();
-		 headers.add("Authorization", authenticationToken());
-		 headers.setContentType(MediaType.APPLICATION_JSON);
-		 return headers;
-	}
 	
 	
 

@@ -1,5 +1,6 @@
 package com.bharatmehta.bidder.service;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import org.slf4j.Logger;
@@ -26,16 +27,13 @@ public class BidderServiceImpl implements BidderService {
 	private BidRepository bidRepository;
 	
 
-	private Banner findActiveBanner( double height, double width) {
-		Banner result = bannerRepository.findActiveByHeightAndWidth(height, width);
-		return result;
-	}
+	
 
 
 
 	@Override
 	@Transactional(readOnly = false)
-	public Bid bid(String tid, double height, double width) throws BidderServiceException {
+	public Bid bid(String tid, int height, int width) throws BidderServiceException {
 		Objects.nonNull(tid);
 		Bid bid = new Bid();
 		try{
@@ -45,10 +43,8 @@ public class BidderServiceImpl implements BidderService {
 			if(banner != null ){
 				LOGGER.info("Banner:{} serves tid:{} ", banner.getId(),tid);
 				
-				Double currentBidAmount = bidRepository.findSumByBanner(banner.getId());
-				currentBidAmount = currentBidAmount == null ? 0.0 :currentBidAmount;
-				double budget = banner.getBudget();
-				if((budget - currentBidAmount) >= banner.getBidPrice()){
+				BigDecimal currentBidAmount = bidRepository.findSumByBanner(banner.getId());
+				if(new BannerBudgetPredicate().test(currentBidAmount, banner)){
 					bid.setBannerId(banner.getId());
 					bid.setPrice(banner.getBidPrice());
 					bid.setUrl(banner.getUrl());
@@ -70,6 +66,11 @@ public class BidderServiceImpl implements BidderService {
 			bidRepository.saveAndFlush(bid);
 		}
 		return bid;
+	}
+	
+	private Banner findActiveBanner( double height, double width) {
+		Banner result = bannerRepository.findActiveByHeightAndWidth(height, width);
+		return result;
 	}
 
 }

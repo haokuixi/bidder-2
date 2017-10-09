@@ -20,7 +20,7 @@ public class BidResponseDto {
 	public void add(Bid ...bid){
 		
 		for(Bid i : bid){
-			bids.add(new BidDto(i.getPrice(),i.getTid(),i.getUrl()));
+			bids.add(new BidDto(i.getPrice().toPlainString(),i.getTid(),i.getUrl()));
 		}
 	}
 

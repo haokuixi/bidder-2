@@ -1,5 +1,7 @@
 package com.bharatmehta.bidder.domain;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -11,13 +13,13 @@ public class Banner {
 	@Id
 	private String id;
 	
-	private double height;
+	private int height;
 	
-	private double width ;
+	private int width ;
 	
-	private double budget;
+	private BigDecimal budget;
 	
-	private double bidPrice;
+	private BigDecimal bidPrice;
 	
 	private boolean active;
 	
@@ -31,13 +33,13 @@ public class Banner {
 	
 	
 
-	public Banner(String id, double height, double width, double budget, double bidPrice, boolean active, String url) {
+	public Banner(String id, int height, int width, String budget, String bidPrice, boolean active, String url) {
 		super();
 		this.id = id;
 		this.height = height;
 		this.width = width;
-		this.budget = budget;
-		this.bidPrice = bidPrice;
+		this.budget = new BigDecimal(budget);
+		this.bidPrice = new BigDecimal(bidPrice);
 		this.active = active;
 		this.url = url;
 	}
@@ -53,21 +55,30 @@ public class Banner {
 	}
 
 
-	public double getBudget() {
+
+	public BigDecimal getBudget() {
 		return budget;
 	}
 
-	public void setBudget(double budget) {
+
+
+	public void setBudget(BigDecimal budget) {
 		this.budget = budget;
 	}
 
-	public double getBidPrice() {
+
+
+	public BigDecimal getBidPrice() {
 		return bidPrice;
 	}
 
-	public void setBidPrice(double bidPrice) {
+
+
+	public void setBidPrice(BigDecimal bidPrice) {
 		this.bidPrice = bidPrice;
 	}
+
+
 
 	public boolean isActive() {
 		return active;
@@ -89,78 +100,71 @@ public class Banner {
 		return height;
 	}
 
-	public void setHeight(double height) {
+	public void setHeight(int height) {
 		this.height = height;
 	}
 
-	public double getWidth() {
+	public int getWidth() {
 		return width;
 	}
 
-	public void setWidth(double width) {
+	public void setWidth(int width) {
 		this.width = width;
 	}
+
+
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (active ? 1231 : 1237);
-		long temp;
-		temp = Double.doubleToLongBits(bidPrice);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(budget);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(height);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((bidPrice == null) ? 0 : bidPrice.hashCode());
+		result = prime * result + ((budget == null) ? 0 : budget.hashCode());
+		result = prime * result + height;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		result = prime * result + ((url == null) ? 0 : url.hashCode());
-		temp = Double.doubleToLongBits(width);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + width;
 		return result;
 	}
 
+
+
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (!(obj instanceof Banner)) {
+		if (getClass() != obj.getClass())
 			return false;
-		}
 		Banner other = (Banner) obj;
-		if (active != other.active) {
+		if (active != other.active)
 			return false;
-		}
-		if (Double.doubleToLongBits(bidPrice) != Double.doubleToLongBits(other.bidPrice)) {
+		if (bidPrice == null) {
+			if (other.bidPrice != null)
+				return false;
+		} else if (!bidPrice.equals(other.bidPrice))
 			return false;
-		}
-		if (Double.doubleToLongBits(budget) != Double.doubleToLongBits(other.budget)) {
+		if (budget == null) {
+			if (other.budget != null)
+				return false;
+		} else if (!budget.equals(other.budget))
 			return false;
-		}
-		if (Double.doubleToLongBits(height) != Double.doubleToLongBits(other.height)) {
+		if (height != other.height)
 			return false;
-		}
 		if (id == null) {
-			if (other.id != null) {
+			if (other.id != null)
 				return false;
-			}
-		} else if (!id.equals(other.id)) {
+		} else if (!id.equals(other.id))
 			return false;
-		}
 		if (url == null) {
-			if (other.url != null) {
+			if (other.url != null)
 				return false;
-			}
-		} else if (!url.equals(other.url)) {
+		} else if (!url.equals(other.url))
 			return false;
-		}
-		if (Double.doubleToLongBits(width) != Double.doubleToLongBits(other.width)) {
+		if (width != other.width)
 			return false;
-		}
 		return true;
 	}
 

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 @JsonInclude(value = Include.NON_NULL)
 public class BidDto {
 
-	private double price;
+	private String price;
 	
 	private String tid;
 	
@@ -20,7 +20,7 @@ public class BidDto {
 	
 	
 
-	public BidDto(double price, String tid, String url) {
+	public BidDto(String price, String tid, String url) {
 		super();
 		this.price = price;
 		this.tid = tid;
@@ -30,12 +30,12 @@ public class BidDto {
 
 
 
-	public double getPrice() {
+	public String getPrice() {
 		return price;
 	}
 
 
-	public void setPrice(double price) {
+	public void setPrice(String price) {
 		this.price = price;
 	}
 
