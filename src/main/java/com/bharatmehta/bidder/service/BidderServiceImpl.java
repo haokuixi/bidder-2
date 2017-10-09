@@ -41,15 +41,15 @@ public class BidderServiceImpl implements BidderService {
 			
 			
 			if(banner != null ){
-				LOGGER.info("Banner:{} serves tid:{} ", banner.getId(),tid);
+				LOGGER.info("Banner:{} serves tid:{} ", banner.getBannerId(),tid);
 				
-				BigDecimal currentBidAmount = bidRepository.findSumByBanner(banner.getId());
+				BigDecimal currentBidAmount = bidRepository.findSumByBanner(banner.getBannerId());
 				if(new BannerBudgetPredicate().test(currentBidAmount, banner)){
-					bid.setBannerId(banner.getId());
+					bid.setBannerId(banner.getBannerId());
 					bid.setPrice(banner.getBidPrice());
 					bid.setUrl(banner.getUrl());
 				}else{
-					LOGGER.info("Budget of Banner:{} doesn't allow for tid:{}",banner.getId() , tid);
+					LOGGER.info("Budget of Banner:{} doesn't allow for tid:{}",banner.getBannerId() , tid);
 				}
 				
 				

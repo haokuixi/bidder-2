@@ -31,7 +31,7 @@ public class CacheConfiguration {
 
 	
 	@CacheEvict(allEntries = true, value = {"banners"})
-	@Scheduled(fixedRate = 5000)
+	@Scheduled(fixedDelay = 5000)
 	public void reportCacheEvict() {
 		
 		LOGGER.info("Evicting cache: {} at {}", cacheManager().getCacheNames(),new Date());

@@ -11,7 +11,10 @@ import com.bharatmehta.bidder.domain.Banner;
 public interface BannerRepository extends JpaRepository<Banner, String> {
 	
 	@Cacheable(value = "banners")
-	@Query(nativeQuery = true, value = "select * from banner where height = ? and width = ? and (active = 1 ) order by bid_price desc limit 1")
+	@Query(nativeQuery = true, value = "select a.* from banner a ,"
+			+ "(select banner_id , max(created) as created from banner  group by banner_id) as b "
+			+ "where a.banner_id = b.banner_id and a.created = b.created and a.active = 1 and a.height = ? and a.width = ? "
+			+ "order by a.bid_price  desc limit 1")
 	public Banner findActiveByHeightAndWidth(double heigt, double width);
 	
 	

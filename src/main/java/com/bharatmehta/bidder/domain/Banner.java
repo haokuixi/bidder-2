@@ -1,17 +1,30 @@
 package com.bharatmehta.bidder.domain;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
 @Table(name="banner")
 public class Banner {
 	
 	@Id
-	private String id;
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private Integer id;
+	
+	@Column(name="banner_id")
+	private String bannerId;
 	
 	private int height;
 	
@@ -23,7 +36,16 @@ public class Banner {
 	
 	private boolean active;
 	
+	
+	
 	private String url;
+	
+
+	@CreationTimestamp
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date created;
+	
+
 
 	
 	public Banner() {
@@ -33,9 +55,9 @@ public class Banner {
 	
 	
 
-	public Banner(String id, int height, int width, String budget, String bidPrice, boolean active, String url) {
+	public Banner(String bannerId, int height, int width, String budget, String bidPrice, boolean active, String url) {
 		super();
-		this.id = id;
+		this.bannerId = bannerId;
 		this.height = height;
 		this.width = width;
 		this.budget = new BigDecimal(budget);
@@ -46,11 +68,22 @@ public class Banner {
 
 
 
-	public String getId() {
-		return id;
+
+
+
+	public String getBannerId() {
+		return bannerId;
 	}
 
-	public void setId(String id) {
+
+
+	public void setBannerId(String bannerId) {
+		this.bannerId = bannerId;
+	}
+
+
+
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -112,62 +145,29 @@ public class Banner {
 		this.width = width;
 	}
 
-
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + (active ? 1231 : 1237);
-		result = prime * result + ((bidPrice == null) ? 0 : bidPrice.hashCode());
-		result = prime * result + ((budget == null) ? 0 : budget.hashCode());
-		result = prime * result + height;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
-		result = prime * result + width;
-		return result;
+	
+	
+   public Date getCreated() {
+		return created;
 	}
 
 
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Banner other = (Banner) obj;
-		if (active != other.active)
-			return false;
-		if (bidPrice == null) {
-			if (other.bidPrice != null)
-				return false;
-		} else if (!bidPrice.equals(other.bidPrice))
-			return false;
-		if (budget == null) {
-			if (other.budget != null)
-				return false;
-		} else if (!budget.equals(other.budget))
-			return false;
-		if (height != other.height)
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (url == null) {
-			if (other.url != null)
-				return false;
-		} else if (!url.equals(other.url))
-			return false;
-		if (width != other.width)
-			return false;
-		return true;
+	public void setCreated(Date created) {
+		this.created = created;
 	}
 
+
+
+
+
+	public Integer getId() {
+		return id;
+	}
+
+
+
+	
 	
 	
 

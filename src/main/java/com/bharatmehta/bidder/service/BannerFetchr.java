@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -95,8 +96,8 @@ public class BannerFetchr implements Fetchr {
 	 * @see com.bharatmehta.bidder.service.Fetchr#fetch()
 	 */
     @Override
-	@Transactional(readOnly = false)
-    @Scheduled(fixedRate = 5000)
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Scheduled(fixedDelay = 5000)
 	public int fetch(){
 		return fetchAndSaveBanners();
 	}
@@ -121,6 +122,10 @@ public class BannerFetchr implements Fetchr {
 					  }
 				  }
 			  }
+			  
+		  }else if(response.getStatusCode() == HttpStatus.FORBIDDEN){
+			  throw new BannersNotFoundException(new WebServiceAuthenticationException(MessageFormat.format("{0} responded with {1}", new Object[]{bannersURL, response.getStatusCode()})));
+			 
 			  
 		  }else{
 			  throw new BannersNotFoundException(MessageFormat.format("{0} responded with {1}", new Object[]{bannersURL, response.getStatusCode()}));
