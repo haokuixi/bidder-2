@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 
 public class BidRequestDto {
 
-	@NotNull
+	@NotNull(message = "tid is mandatory")
 	private String tid;
 	
 	private String refer;
