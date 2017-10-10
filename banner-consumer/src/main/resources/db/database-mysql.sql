@@ -1,0 +1,16 @@
+CREATE DATABASE `bidder`;
+
+CREATE TABLE `banner` (
+  `id` bigint(10) NOT NULL AUTO_INCREMENT,
+  `banner_id` varchar(200) DEFAULT '',
+  `bid_price` decimal(10,2) DEFAULT NULL,
+  `budget` decimal(11,2) DEFAULT NULL,
+  `height` decimal(10,2) DEFAULT NULL,
+  `width` decimal(10,2) DEFAULT NULL,
+  `active` varchar(45) DEFAULT NULL,
+  `url` varchar(500) DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Banners';
+
+
