@@ -1,4 +1,6 @@
-# bidder
+# bidder-service
+
+This is the bidding service to get bids
 
 The following tools/frameworks have been used for this exercise:
 
@@ -6,13 +8,6 @@ The following tools/frameworks have been used for this exercise:
 * JPA
 * Maven
 * Spring Boot with embedded Tomcat
-
-
-## To Run
-* Checkout the code
-* Start MYSQL server and run bidder/src/main/resources/db/database-mysql.sql
-* Run the executable jar using java -jar api.jar
-* Changle values in bidder/src/main/resources/application.properties according to needs
 
 
 

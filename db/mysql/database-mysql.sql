@@ -14,3 +14,16 @@ CREATE TABLE `banner` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Banners';
 
 
+
+CREATE TABLE `bid` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `tid` varchar(450) DEFAULT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `banner_id` varchar(50) DEFAULT NULL,
+  `created` datetime DEFAULT NULL,
+  `url` varchar(500) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Bids';
+
+
+
