@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bharatmehta.bannerconsumer.aspect.TimeTrack;
 import com.bharatmehta.bannerconsumer.domain.Banner;
 import com.bharatmehta.bannerconsumer.exception.BannersNotFoundException;
 import com.bharatmehta.bannerconsumer.repository.BannerRepository;
@@ -61,6 +62,7 @@ public class BannerService {
 	
 	
 	@Scheduled(fixedDelay = 5000)
+	@TimeTrack
 	public void pullAndPushToDatabase(){
 		pushToDatabase(pullBanners());
 	}

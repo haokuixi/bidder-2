@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bharatmehta.bidder.aspect.TimeTrack;
 import com.bharatmehta.bidder.domain.Banner;
 import com.bharatmehta.bidder.domain.Bid;
 import com.bharatmehta.bidder.exception.BidderServiceException;
@@ -33,6 +34,7 @@ public class BidderServiceImpl implements BidderService {
 
 	@Override
 	@Transactional(readOnly = false)
+	@TimeTrack
 	public Bid bid(String tid, int height, int width) throws BidderServiceException {
 		Objects.nonNull(tid);
 		Bid bid = new Bid();
